@@ -2,7 +2,7 @@
 
 > Unified search and knowledge system for AI coding environments - combining 9+ specialized backends with hybrid scoring, intelligent caching, and automatic health tracking
 
-[![Build Status](https://img.shields.io/github/actions/status/EndUser123/unified-search?branch=main)](https://github.com/EndUser123/unified-search/actions) [![Version](https://img.shields.io/badge/version-0.1.0-orange)](https://github.com/EndUser123/unified-search) [![Python](https://img.shields.io/pypi/pyversions/unified-search)](https://pypi.org/project/unified-search/) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://img.shields.io/github/actions/status/EndUser123/unified-search?branch=main)](https://github.com/EndUser123/unified-search/actions) [![Version](https://img.shields.io/badge/version-0.1.0-orange)](https://github.com/EndUser123/unified-search) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## 📺 Assets & Media
 
@@ -49,10 +49,10 @@ Includes core backends: CDS (Code Documentation), Grep (Code Patterns), Skills
 pip install unified-search[all]
 
 # Or install specific feature sets
-pip install unified-search[chs,cks]    # Chat History + Constitutional Knowledge
-pip install unified-search[multilang]  # Multi-language code search
-pip install unified-search[ml]         # Machine learning features
-pip install unified-search[graph]      # Knowledge graph features
+pip install unified-search[chs,cks]  # Chat History + Constitutional Knowledge
+pip install unified-search[multilang] # Multi-language code search
+pip install unified-search[ml]     # Machine learning features
+pip install unified-search[graph]   # Knowledge graph features
 ```
 
 ### Development Installation
@@ -101,17 +101,17 @@ results = search("async patterns")
 
 # Filtered search with parameters
 results = search(
-    "vector embeddings",
-    backend=["chs", "cks"],
-    limit=50,
-    time_filter="week"
+  "vector embeddings",
+  backend=["chs", "cks"],
+  limit=50,
+  time_filter="week"
 )
 
 # Access results
 for result in results.hits:
-    print(f"[{result.backend}] {result.title}")
-    print(f"  Score: {result.score:.3f}")
-    print(f"  {result.snippet}")
+  print(f"[{result.backend}] {result.title}")
+  print(f" Score: {result.score:.3f}")
+  print(f" {result.snippet}")
 ```
 
 ## Architecture
@@ -120,30 +120,30 @@ for result in results.hits:
 
 ```mermaid
 graph TD
-    A[User Query] --> B[Query Router]
-    B --> C{Query Type}
+  A[User Query] --> B[Query Router]
+  B --> C{Query Type}
 
-    C -->|Code| D[Code Search Index]
-    C -->|Documentation| E[Documentation Search]
-    C -->|Issues| D
-    C -->|History| F[Git History Search]
+  C -->|Code| D[Code Search Index]
+  C -->|Documentation| E[Documentation Search]
+  C -->|Issues| D
+  C -->|History| F[Git History Search]
 
-    D --> G[Code Results]
-    E --> H[Docs Results]
-    F --> I[History Results]
+  D --> G[Code Results]
+  E --> H[Docs Results]
+  F --> I[History Results]
 
-    G --> J[Result Aggregator]
-    H --> J
-    I --> J
+  G --> J[Result Aggregator]
+  H --> J
+  I --> J
 
-    J --> K[Ranking Engine]
-    K --> L[Unified Results]
+  J --> K[Ranking Engine]
+  K --> L[Unified Results]
 
-    L --> M[Format Output]
-    M --> N[Display to User]
+  L --> M[Format Output]
+  M --> N[Display to User]
 
-    style B fill:#e1f5ff
-    style L fill:#c8e6c9
+  style B fill:#e1f5ff
+  style L fill:#c8e6c9
 ```
 
 ### Search Backends
@@ -186,13 +186,13 @@ os.environ['SEARCH_KNOWLEDGE_CACHE_TTL'] = '7200'
 
 # Or configure directly
 router = EnhancedUnifiedSearchRouter(
-    enable_cache=True,
-    cache_ttl=7200,
-    cache_size=2000,
-    enable_fuzzy=True,
-    fuzzy_max_edits=3,
-    enable_health=True,
-    health_check_interval=600
+  enable_cache=True,
+  cache_ttl=7200,
+  cache_size=2000,
+  enable_fuzzy=True,
+  fuzzy_max_edits=3,
+  enable_health=True,
+  health_check_interval=600
 )
 ```
 
@@ -205,18 +205,18 @@ from unified_search import EnhancedUnifiedSearchRouter
 
 # Create router with custom configuration
 router = EnhancedUnifiedSearchRouter(
-    enable_cache=True,
-    cache_ttl=3600,
-    enable_fuzzy=True,
-    fuzzy_max_edits=2
+  enable_cache=True,
+  cache_ttl=3600,
+  enable_fuzzy=True,
+  fuzzy_max_edits=2
 )
 
 # Search with full control
 results = router.search(
-    query="machine learning pipelines",
-    backends=["CHS", "CKS", "CDS"],
-    limit=20,
-    threshold=0.5
+  query="machine learning pipelines",
+  backends=["CHS", "CKS", "CDS"],
+  limit=20,
+  threshold=0.5
 )
 
 # Access metadata
@@ -236,14 +236,14 @@ print(f"Total hits: {len(results.hits)}")
 
 # Iterate results
 for hit in results.hits:
-    print(f"\n[{hit.backend}] {hit.title}")
-    print(f"  Score: {hit.score:.3f}")
-    print(f"  Snippet: {hit.snippet[:100]}...")
+  print(f"\n[{hit.backend}] {hit.title}")
+  print(f" Score: {hit.score:.3f}")
+  print(f" Snippet: {hit.snippet[:100]}...")
 
 # Access custom metadata
 if hit.metadata:
-    print(f"  File: {hit.metadata.get('file', 'N/A')}")
-    print(f"  Line: {hit.metadata.get('line', 'N/A')}")
+  print(f" File: {hit.metadata.get('file', 'N/A')}")
+  print(f" Line: {hit.metadata.get('line', 'N/A')}")
 ```
 
 ## Development
@@ -255,8 +255,8 @@ cd packages/unified-search
 
 # Create virtual environment
 python -m venv venv
-venv\Scripts\activate  # Windows
-source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate # Windows
+source venv/bin/activate # Linux/Mac
 
 # Install with dev dependencies
 pip install -e ".[all,dev]"
@@ -298,32 +298,32 @@ mypy src/
 **Issue: "Backend not found" error**
 - **Cause**: Optional dependencies not installed
 - **Fix**: Install required dependencies
-  ```bash
-  pip install unified-search[chs]   # For CHS backend
-  pip install unified-search[cks]   # For CKS backend
-  ```
+ ```bash
+ pip install unified-search[chs]  # For CHS backend
+ pip install unified-search[cks]  # For CKS backend
+ ```
 
 **Issue: "Database file not found"**
 - **Cause**: CHS/CKS database path not configured
 - **Fix**: Set environment variables
-  ```bash
-  export SEARCH_KNOWLEDGE_CHS_DB=/path/to/chat_history.db
-  export SEARCH_KNOWLEDGE_CKS_DB=/path/to/cks.db
-  ```
+ ```bash
+ export SEARCH_KNOWLEDGE_CHS_DB=/path/to/chat_history.db
+ export SEARCH_KNOWLEDGE_CKS_DB=/path/to/cks.db
+ ```
 
 **Issue: "MultiLang backend slow"**
 - **Cause**: Tree-sitter indexing on large codebases
 - **Fix**: Disable MultiLang or use smaller codebase
-  ```bash
-  export SEARCH_USE_MULTILANG=0
-  ```
+ ```bash
+ export SEARCH_USE_MULTILANG=0
+ ```
 
 **Issue: "Cache not working"**
 - **Cause**: Cache disabled or misconfigured
 - **Fix**: Enable cache in router configuration
-  ```python
-  router = EnhancedUnifiedSearchRouter(enable_cache=True)
-  ```
+ ```python
+ router = EnhancedUnifiedSearchRouter(enable_cache=True)
+ ```
 
 ### Debug Mode
 
@@ -342,24 +342,24 @@ logging.basicConfig(level=logging.DEBUG)
 ## Performance Tips
 
 1. **Enable Caching**: Cache repeated queries for faster results
-   ```python
-   router = EnhancedUnifiedSearchRouter(enable_cache=True)
-   ```
+  ```python
+  router = EnhancedUnifiedSearchRouter(enable_cache=True)
+  ```
 
 2. **Limit Backends**: Search only relevant backends
-   ```python
-   results = search("query", backend=["CDS", "Grep"])
-   ```
+  ```python
+  results = search("query", backend=["CDS", "Grep"])
+  ```
 
 3. **Set Limits**: Restrict result count for faster responses
-   ```python
-   results = search("query", limit=20)
-   ```
+  ```python
+  results = search("query", limit=20)
+  ```
 
 4. **Disable Multilang**: Use AST backends (CDS/Grep) instead of tree-sitter
-   ```bash
-   export SEARCH_USE_MULTILANG=0
-   ```
+  ```bash
+  export SEARCH_USE_MULTILANG=0
+  ```
 
 ## Documentation
 
