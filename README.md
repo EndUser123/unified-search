@@ -2,9 +2,22 @@
 
 > Unified search and knowledge system for AI coding environments - combining 9+ specialized backends with hybrid scoring, intelligent caching, and automatic health tracking
 
-[![Build Status](https://img.shields.io/github/actions/status/csf-nip/unified-search?branch=main)](https://github.com/csf-nip/unified-search/actions) [![Version](https://img.shields.io/pypi/v/unified-search)](https://pypi.org/project/unified-search/) [![Python](https://img.shields.io/pypi/pyversions/unified-search)](https://pypi.org/project/unified-search/) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://img.shields.io/github/actions/status/EndUser123/unified-search?branch=main)](https://github.com/EndUser123/unified-search/actions) [![Version](https://img.shields.io/badge/version-0.1.0-orange)](https://github.com/EndUser123/unified-search) [![Python](https://img.shields.io/pypi/pyversions/unified-search)](https://pypi.org/project/unified-search/) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## Features
+## 📺 Assets & Media
+
+Architecture diagrams are available in the [assets/](./assets/) directory:
+
+- **Architecture Diagram**: See [assets/diagrams/architecture.md](./assets/diagrams/architecture.md) for system design overview with query routing and 3 search backends
+- **Integration Guide**: Examples for integrating with global /search command
+
+Note: Media assets use mermaid format and can be rendered in GitHub's markdown viewer.
+
+## Overview
+
+**unified-search** provides a unified interface for searching across multiple knowledge sources in AI coding environments, combining specialized backends with intelligent ranking and caching.
+
+### Key Features
 
 - **Multi-Backend Search**: 9+ specialized backends (code, knowledge, chat history, skills, and more)
 - **Hybrid Scoring**: BM25 + cosine similarity fusion for relevance ranking
@@ -54,16 +67,6 @@ pip install -e "packages/unified-search[all,dev]"
 # - Enables live code editing without reinstall
 ```
 
-### Optional Dependencies
-
-| Feature | Dependencies | Description |
-|---------|-------------|-------------|
-| **CHS** | `sentence-transformers` | Chat History Search - semantic conversation search |
-| **CKS** | `faiss-cpu`, `sentence-transformers`, `numpy` | Constitutional Knowledge System - vector knowledge base |
-| **Multilang** | `tree-sitter`, language parsers | Multi-language code search via tree-sitter |
-| **ML** | `scipy`, `scikit-learn` | Machine learning features and advanced scoring |
-| **Graph** | `networkx` | Knowledge graph and relationship analysis |
-
 ## Quick Start
 
 ### CLI Usage
@@ -111,34 +114,39 @@ for result in results.hits:
     print(f"  {result.snippet}")
 ```
 
-### Advanced Usage
+## Architecture
 
-```python
-from unified_search import EnhancedUnifiedSearchRouter
+### System Overview
 
-# Create router with custom configuration
-router = EnhancedUnifiedSearchRouter(
-    enable_cache=True,
-    cache_ttl=3600,
-    enable_fuzzy=True,
-    fuzzy_max_edits=2
-)
+```mermaid
+graph TD
+    A[User Query] --> B[Query Router]
+    B --> C{Query Type}
 
-# Search with full control
-results = router.search(
-    query="machine learning pipelines",
-    backends=["CHS", "CKS", "CDS"],
-    limit=20,
-    threshold=0.5
-)
+    C -->|Code| D[Code Search Index]
+    C -->|Documentation| E[Documentation Search]
+    C -->|Issues| D
+    C -->|History| F[Git History Search]
 
-# Access metadata
-print(f"Query: {results.query}")
-print(f"Total hits: {len(results.hits)}")
-print(f"Backends used: {results.metadata.get('backends', [])}")
+    D --> G[Code Results]
+    E --> H[Docs Results]
+    F --> I[History Results]
+
+    G --> J[Result Aggregator]
+    H --> J
+    I --> J
+
+    J --> K[Ranking Engine]
+    K --> L[Unified Results]
+
+    L --> M[Format Output]
+    M --> N[Display to User]
+
+    style B fill:#e1f5ff
+    style L fill:#c8e6c9
 ```
 
-## Backends
+### Search Backends
 
 | Backend | Description | Optional Dependencies | Use Case |
 |---------|-------------|---------------------|----------|
@@ -151,22 +159,6 @@ print(f"Backends used: {results.metadata.get('backends', [])}")
 | **MultiLang** | Multi-language Code Search | tree-sitter | Cross-language code patterns |
 | **RLM** | Recursive Language Model | None | Code generation search |
 | **Persona** | Persona Memory | None | Cognitive context search |
-
-### Backend Constants
-
-When specifying backends, use these exact names:
-
-| CLI Input | Backend Constant |
-|-----------|------------------|
-| `grep` | `BACKEND_GREP = "Grep"` |
-| `cds` | `BACKEND_CDS = "CDS"` |
-| `chs` | `BACKEND_CHS = "CHS"` |
-| `cks` | `BACKEND_CKS = "CKS"` |
-| `kg` | `BACKEND_KG = "KG"` |
-| `skills` | `BACKEND_SKILLS = "Skills"` |
-| `multilang` | `BACKEND_MULTILANG = "MultiLang"` |
-| `rlm` | `BACKEND_RLM = "RLM"` |
-| `persona` | `BACKEND_PERSONA = "Persona"` |
 
 ## Configuration
 
@@ -204,113 +196,33 @@ router = EnhancedUnifiedSearchRouter(
 )
 ```
 
-## Architecture
-
-### System Overview
-
-```mermaid
-graph TB
-    Query[User Query] --> Router[Enhanced Unified Search Router]
-    Router --> Cache{LRU Cache}
-    Cache -->|Hit| Results[Search Results]
-    Cache -->|Miss| Health{Backend Health}
-    Health --> Backend1[CHS]
-    Health --> Backend2[CKS]
-    Health --> Backend3[CDS]
-    Health --> Backend4[Grep]
-    Health --> Backend5[Skills]
-    Health --> Backend6[KG]
-    Health --> Backend7[Multilang]
-    Health --> Backend8[RLM]
-    Health --> Backend9[Persona]
-    Backend1 --> Dedup[Result Deduplicator]
-    Backend2 --> Dedup
-    Backend3 --> Dedup
-    Backend4 --> Dedup
-    Backend5 --> Dedup
-    Backend6 --> Dedup
-    Backend7 --> Dedup
-    Backend8 --> Dedup
-    Backend9 --> Dedup
-    Dedup --> Fuzzy[Fuzzy Matcher]
-    Fuzzy --> Results
-    Results --> Cache
-```
-
-### Core Components
-
-| Component | Purpose | Location |
-|-----------|---------|----------|
-| `EnhancedUnifiedSearchRouter` | Main orchestrator for parallel search | `router.py` |
-| `LRUCache` | Query result caching with TTL | `cache.py` |
-| `BackendHealthTracker` | Health tracking with exponential backoff | `backend_health.py` |
-| `QueryIntentDetector` | Query intent classification | `query_intent.py` |
-| `IntentClassifier` | ML-based intent recognition | `intent_classifier.py` |
-
-### Data Flow
-
-1. **Query Submission**: User submits query via CLI or Python API
-2. **Cache Check**: Router checks LRU cache for previous results
-3. **Health Check**: Backends checked for health/status
-4. **Parallel Search**: Healthy backends searched in parallel
-5. **Deduplication**: Cross-backend duplicates removed
-6. **Fuzzy Matching**: Typo-tolerant alternative matches
-7. **Result Ranking**: Hybrid scoring (BM25 + cosine)
-8. **Cache Update**: Results cached for future queries
-9. **Response**: Ranked results returned to user
-
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [ARCHITECTURE.md](ARCHITECTURE.md) | System architecture, data models, and design patterns |
-| [docs/api_reference.md](docs/api_reference.md) | Complete API documentation for all modules |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Development guidelines and contribution process |
-| [CHANGELOG.md](CHANGELOG.md) | Version history and changes |
-
-## Examples
-
-### Basic Search
-
-```python
-from unified_search import search
-
-# Find code patterns
-results = search("async def")
-for hit in results.hits:
-    print(f"{hit.backend}: {hit.title}")
-```
-
-### Filtered Search
-
-```python
-# Search only knowledge backends
-results = search("machine learning", backend=["CHS", "CKS"])
-
-# Search only code backends
-results = search("authentication", backend=["CDS", "Grep"])
-```
-
-### Time-Filtered Search
-
-```python
-# Recent changes only
-results = search("refactor", time_filter="week")
-```
+## Advanced Usage
 
 ### Custom Configuration
 
 ```python
 from unified_search import EnhancedUnifiedSearchRouter
 
+# Create router with custom configuration
 router = EnhancedUnifiedSearchRouter(
     enable_cache=True,
-    cache_ttl=7200,
+    cache_ttl=3600,
     enable_fuzzy=True,
     fuzzy_max_edits=2
 )
 
-results = router.search("vector database", limit=20)
+# Search with full control
+results = router.search(
+    query="machine learning pipelines",
+    backends=["CHS", "CKS", "CDS"],
+    limit=20,
+    threshold=0.5
+)
+
+# Access metadata
+print(f"Query: {results.query}")
+print(f"Total hits: {len(results.hits)}")
+print(f"Backends used: {results.metadata.get('backends', [])}")
 ```
 
 ### Working with Results
@@ -379,37 +291,6 @@ ruff check src/ tests/
 mypy src/
 ```
 
-### Project Structure
-
-```
-unified-search/
-├── src/unified_search/
-│   ├── __init__.py           # Package exports
-│   ├── router.py             # Enhanced unified search router
-│   ├── cache.py              # LRU cache with TTL
-│   ├── backend_health.py     # Backend health tracking
-│   ├── query_intent.py       # Query intent detection
-│   ├── intent_classifier.py  # ML-based intent classification
-│   └── knowledge/
-│       ├── __init__.py
-│       └── chs/
-│           ├── __init__.py
-│           └── embeddings.py # CHS embedding utilities
-├── tests/                    # Test suite
-│   ├── test_init.py
-│   ├── test_cache.py
-│   ├── test_backend_health.py
-│   ├── test_intent_classifier.py
-│   └── test_embeddings.py
-├── docs/                     # Documentation
-│   └── api_reference.md
-├── skill/                    # Claude Code skill
-│   └── SKILL.md
-├── pyproject.toml            # Project configuration
-├── README.md                 # This file
-└── LICENSE                   # MIT License
-```
-
 ## Troubleshooting
 
 ### Common Issues
@@ -458,12 +339,6 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 ```
 
-### Getting Help
-
-- **Documentation**: See [docs/api_reference.md](docs/api_reference.md) for API details
-- **Issues**: Report bugs at https://github.com/csf-nip/unified-search/issues
-- **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines
-
 ## Performance Tips
 
 1. **Enable Caching**: Cache repeated queries for faster results
@@ -486,6 +361,15 @@ logging.basicConfig(level=logging.DEBUG)
    export SEARCH_USE_MULTILANG=0
    ```
 
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [ARCHITECTURE.md](ARCHITECTURE.md) | System architecture, data models, and design patterns |
+| [docs/api_reference.md](docs/api_reference.md) | Complete API documentation for all modules |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Development guidelines and contribution process |
+| [CHANGELOG.md](CHANGELOG.md) | Version history and changes |
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
@@ -494,21 +378,12 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
+## Links
+
+- **Homepage**: https://github.com/EndUser123/unified-search
+- **Repository**: https://github.com/EndUser123/unified-search
+- **Issues**: https://github.com/EndUser123/unified-search/issues
+
 ## Version
 
 0.1.0 (Alpha)
-
-## Links
-
-- **Homepage**: https://github.com/csf-nip/unified-search
-- **Documentation**: https://unified-search.readthedocs.io
-- **Repository**: https://github.com/csf-nip/unified-search
-- **Issues**: https://github.com/csf-nip/unified-search/issues
-## 📺 Assets & Media
-
-Architecture diagrams are available in the [assets/](./assets/) directory:
-
-- **Architecture Diagram**: See [assets/diagrams/architecture.md](./assets/diagrams/architecture.md) for system design overview
-- **Integration Guide**: Examples for integrating with global /search command
-
-Note: Diagrams use mermaid format and can be rendered in GitHub's markdown viewer.
