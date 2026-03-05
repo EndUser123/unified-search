@@ -504,3 +504,11 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 - **Documentation**: https://unified-search.readthedocs.io
 - **Repository**: https://github.com/csf-nip/unified-search
 - **Issues**: https://github.com/csf-nip/unified-search/issues
+## 📺 Assets & Media
+
+Architecture diagrams are available in the [assets/](./assets/) directory:
+
+- **Architecture Diagram**: See [assets/diagrams/architecture.md](./assets/diagrams/architecture.md) for system design overview
+- **Integration Guide**: Examples for integrating with global /search command
+
+Note: Diagrams use mermaid format and can be rendered in GitHub's markdown viewer.
